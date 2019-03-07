@@ -9,11 +9,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
+//TODO: check if server counts users properly
 public class Server
 {
     public static final int SERVER_PORT = 5056;
     public static final int SERVER_SIZE = 10;
 
+    private int idCreator = 0;
     private final ServerSocket socketManager;
     //Vector is thread safe
     static Vector<ClientHandler> userContainer = new Vector<>();
@@ -51,9 +53,9 @@ public class Server
                 newSocket = socketManager.accept();
                 System.out.println("A new client is connected : " + newSocket);
 
-                ClientHandler user = new ClientHandler("user" + usersCount, newSocket);
+                idCreator++;
+                ClientHandler user = new ClientHandler("user" + idCreator, newSocket);
                 userContainer.add(user);
-                usersCount++;
 
                 Thread t = new Thread(user);
                 t.start();

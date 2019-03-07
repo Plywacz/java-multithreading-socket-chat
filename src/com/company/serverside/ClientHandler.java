@@ -7,7 +7,7 @@ Date: 06.03.2019
 import java.io.*;
 import java.net.Socket;
 import java.util.Vector;
-
+//TODO fix indexing clients(when removing client and then adding another client Program  creates bugged names of clients)
 public class ClientHandler implements Runnable
 {
     private final DataInputStream inputStream;
@@ -44,6 +44,17 @@ public class ClientHandler implements Runnable
 
     }
 
+    private void sendToAll(String msgToSend) throws IOException
+    {
+        for (ClientHandler user : Server.userContainer)
+        {
+                user.outputStream.writeUTF(this.name+ "( sent to all)" + " : " + msgToSend);
+        }
+
+    }
+
+    //private void sendToOne()
+
     @Override
     public void run()
     {
@@ -75,6 +86,11 @@ public class ClientHandler implements Runnable
                 String[] result = receivedMsg.split("-> ");
                 String msgToSend = result[0];
                 String recipient = result[1];
+
+                if(recipient.equals("all"))
+                {
+                    sendToAll(msgToSend);
+                }
 
                 // search for the recipient in the connected devices list.
                 // ar is the vector storing client of active users
