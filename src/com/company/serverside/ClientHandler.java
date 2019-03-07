@@ -61,6 +61,7 @@ public class ClientHandler implements Runnable
                 if (receivedMsg.equals("Exit"))
                 {
                     this.closeConnection();
+                    Server.userContainer.remove(this);
                     break;
                 }
                 else if (receivedMsg.equals("list users"))
