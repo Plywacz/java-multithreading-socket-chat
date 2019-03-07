@@ -7,6 +7,7 @@ Date: 06.03.2019
 import java.io.*;
 import java.net.Socket;
 import java.util.Vector;
+
 //TODO fix indexing clients(when removing client and then adding another client Program  creates bugged names of clients)
 public class ClientHandler implements Runnable
 {
@@ -48,12 +49,26 @@ public class ClientHandler implements Runnable
     {
         for (ClientHandler user : Server.userContainer)
         {
-                user.outputStream.writeUTF(this.name+ "( sent to all)" + " : " + msgToSend);
+            user.outputStream.writeUTF(this.name + "( sent to all)" + " : " + msgToSend);
         }
 
     }
 
-    //private void sendToOne()
+    private void sendToOne(String msgToSend, String recipient) throws IOException
+    {
+        // search for the recipient in the connected devices list.
+        // ar is the vector storing client of active users
+        for (ClientHandler user : Server.userContainer)
+        {
+            // if the recipient is found, write on its
+            // output stream
+            if (user.name.equals(recipient) && user.isLoggedIn)
+            {
+                user.outputStream.writeUTF(this.name + " : " + msgToSend);
+                break;
+            }
+        }
+    }
 
     @Override
     public void run()
@@ -87,23 +102,16 @@ public class ClientHandler implements Runnable
                 String msgToSend = result[0];
                 String recipient = result[1];
 
-                if(recipient.equals("all"))
+                if (recipient.equals("all"))
                 {
-                    sendToAll(msgToSend);
+                    this.sendToAll(msgToSend);
+                }
+                else
+                {
+                    sendToOne(msgToSend, recipient);
                 }
 
-                // search for the recipient in the connected devices list.
-                // ar is the vector storing client of active users
-                for (ClientHandler user : Server.userContainer)
-                {
-                    // if the recipient is found, write on its
-                    // output stream
-                    if (user.name.equals(recipient) && user.isLoggedIn)
-                    {
-                        user.outputStream.writeUTF(this.name + " : " + msgToSend);
-                        break;
-                    }
-                }
+
             }
 
             this.closeConnection();

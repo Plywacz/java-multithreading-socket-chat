@@ -10,6 +10,9 @@ import java.net.Socket;
 import java.util.Vector;
 
 //TODO: check if server counts users properly
+//todo: make server flexible for ip addresses
+//TODO: migrate this project to spring boot
+//TODO: add gui
 public class Server
 {
     public static final int SERVER_PORT = 5056;
