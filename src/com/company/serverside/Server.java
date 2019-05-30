@@ -13,21 +13,22 @@ import java.util.Vector;
 //todo: make server flexible for ip addresses
 //TODO: migrate this project to spring boot
 
-public class Server {
-    public static final int SERVER_PORT = 5056;
-    public static final int SERVER_SIZE = 10;
+final class Server {
+    private static final int SERVER_PORT = 5056;
+    private static final int SERVER_SIZE = 10;
 
     private int idCreator = 0;
+    private int usersCount = 0;
+
     private final ServerSocket socketManager = new ServerSocket(SERVER_PORT);
     //Vector is thread safe
     static Vector<ClientHandler> userContainer = new Vector<>();
-    static int usersCount = 0;
 
-    public Server() throws IOException {
+    private Server() throws IOException {
 
     }
 
-    static String showConnectedUsers() {
+    String getConnectedUsers() {
         System.out.println("Connected users: ");
 
         String result = "";
@@ -45,21 +46,28 @@ public class Server {
             try {
                 //new  socket on server to handle new client's connection
                 //accept() blocks program when waiting for connection
-                newSocket = socketManager.accept();
-                System.out.println("A new client is connected : " + newSocket);
-
-                idCreator++;
-                ClientHandler user = new ClientHandler("user" + idCreator, newSocket);
+                ClientHandler user = new ClientHandler(createNewUsername(), socketManager.accept(), this);
                 userContainer.add(user);
 
                 Thread t = new Thread(user);
                 t.start();
 
+                System.out.println("A new client is connected : ");
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    void disconnectUser(ClientHandler user) {
+        userContainer.remove(user);
+        usersCount--;
+        idCreator--;
+    }
+
+    private String createNewUsername() {
+        return "user" + ++idCreator;
     }
 
     public static void main(String[] args) throws IOException {

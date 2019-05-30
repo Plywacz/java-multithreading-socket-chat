@@ -5,8 +5,6 @@ Date: 07.03.2019
 */
 
 
-import com.company.serverside.Server;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,8 +15,8 @@ import java.util.Scanner;
 
 
 //TODO handle: logout without causing exceptions  on the client and server sides,
-public class Client
-{
+//todo fix exception with Exit
+public class Client {
     //flag to stop thread. Reminder thread stops when run() method from thread returned
     private volatile boolean running = true;
 
@@ -28,8 +26,7 @@ public class Client
     private final DataOutputStream outputStream;
 
 
-    public Client() throws UnknownHostException, IOException
-    {
+    public Client() throws IOException {
         scn = new Scanner(System.in);
 
         // getting localhost ip
@@ -43,30 +40,22 @@ public class Client
         outputStream = new DataOutputStream(socket.getOutputStream());
     }
 
-    private void sendMessage()
-    {
+    private void sendMessage() {
         Thread sendMessage = new Thread(() ->
         {
-            while (true)
-            {
-                if (!running)
-                    return;
-
-                try
-                {
+            while (running) {
+                try {
                     String msg = scn.nextLine();
                     // write on the output stream
                     outputStream.writeUTF(msg);
-                    if (msg.equals("Exit"))
-                    {
+                    if (msg.equals("Exit")) {
                         running = false;
                         socket.close();
                         return;
                         //you exit the run() you kill thread, return above does it
                     }
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -74,23 +63,16 @@ public class Client
         sendMessage.start();
     }
 
-    private void readMessage()
-    {
+    private void readMessage() {
         Thread readMessage = new Thread(() ->
         {
-            while (true)
-            {
-                if (!running)
-                    return;
-
-                try
-                {
+            while (running) {
+                try {
                     // read the message sent to this client
                     String msg = inputStream.readUTF();
                     System.out.println(msg);
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -98,14 +80,9 @@ public class Client
         readMessage.start();
     }
 
-    public static void main(String args[]) throws IOException, java.io.IOException
-    {
-
-
+    public static void main(String args[]) throws IOException, java.io.IOException {
         Client client = new Client();
         client.sendMessage();
         client.readMessage();
-
-
     }
 }
