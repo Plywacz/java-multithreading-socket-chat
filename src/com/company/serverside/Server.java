@@ -12,45 +12,37 @@ import java.util.Vector;
 //TODO: check if server counts users properly
 //todo: make server flexible for ip addresses
 //TODO: migrate this project to spring boot
-//TODO: add gui
-public class Server
-{
+
+public class Server {
     public static final int SERVER_PORT = 5056;
     public static final int SERVER_SIZE = 10;
 
     private int idCreator = 0;
-    private final ServerSocket socketManager;
+    private final ServerSocket socketManager = new ServerSocket(SERVER_PORT);
     //Vector is thread safe
     static Vector<ClientHandler> userContainer = new Vector<>();
-    static int usersCount;
+    static int usersCount = 0;
 
-    public Server() throws IOException
-    {
-        socketManager = new ServerSocket(SERVER_PORT);
-        usersCount = 0;
+    public Server() throws IOException {
+
     }
 
-    static String showConnectedUsers()
-    {
+    static String showConnectedUsers() {
         System.out.println("Connected users: ");
 
         String result = "";
-        for (ClientHandler clients : userContainer)
-        {
-            result = result + " " + clients.toString() + " ";
+        for (ClientHandler client : userContainer) {
+            result = result + " " + client.toString() + " ";
             System.out.println(result);
         }
         return result;
     }
 
-    private void start()
-    {
-        while (usersCount < SERVER_SIZE)
-        {
+    private void start() {
+        while (usersCount < SERVER_SIZE) {
             Socket newSocket;
 
-            try
-            {
+            try {
                 //new  socket on server to handle new client's connection
                 //accept() blocks program when waiting for connection
                 newSocket = socketManager.accept();
@@ -64,15 +56,13 @@ public class Server
                 t.start();
 
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         Server server = new Server();
         server.start();
     }
