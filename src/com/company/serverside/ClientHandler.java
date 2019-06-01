@@ -42,6 +42,7 @@ final class ClientHandler implements Runnable {
                 System.out.println(receivedMsg);
 
                 if (receivedMsg.equals("Exit")) {
+                    outputStream.writeUTF("Exit"); //server tells client that it has closed connection for him
                     outputStream.writeUTF("Closing connection for this user");
                     this.closeConnection();
                     ownerServer.disconnectUser(this);

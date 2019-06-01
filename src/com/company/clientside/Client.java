@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 
 //TODO handle: logout without causing exceptions  on the client and server sides,
-//todo fix exception with Exit
+
 public class Client {
     //flag to stop thread. Reminder thread stops when run() method from thread returned
     private volatile boolean running = true;
@@ -45,18 +45,17 @@ public class Client {
             while (running) {
                 try {
                     String msg = scn.nextLine();
-                    // write on the output stream
-                    outputStream.writeUTF(msg);
                     if (msg.equals("Exit")) {
                         running = false;
-                        inputStream.close();
-                        outputStream.close();
-                        socket.close();
+                        scn.close();
                         //you exit the run() you kill thread, return above does it
                     }
+                    // write on the output stream
+                    outputStream.writeUTF(msg);
                 }
                 catch (IOException e) {
                     e.printStackTrace();
+                   // System.out.println("finally closed");
                 }
             }
         });
@@ -70,6 +69,14 @@ public class Client {
                 try {
                     // read the message sent to this client
                     String msg = inputStream.readUTF();
+                    if (msg.equals("Exit")) {
+                        running = false; // it is not necessary  since send msg thread set this flag on false;
+                        inputStream.close();
+                        outputStream.close();
+                        socket.close();
+                        scn.close();
+                        //you exit the run() you kill thread, return above does it
+                    }
                     System.out.println(msg);
                 }
                 catch (IOException e) {
