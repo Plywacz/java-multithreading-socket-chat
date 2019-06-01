@@ -10,7 +10,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 
@@ -26,7 +25,7 @@ public class Client {
     private final DataOutputStream outputStream;
 
 
-    public Client() throws IOException {
+    private Client() throws IOException {
         scn = new Scanner(System.in);
 
         // getting localhost ip
@@ -50,8 +49,9 @@ public class Client {
                     outputStream.writeUTF(msg);
                     if (msg.equals("Exit")) {
                         running = false;
+                        inputStream.close();
+                        outputStream.close();
                         socket.close();
-                        return;
                         //you exit the run() you kill thread, return above does it
                     }
                 }

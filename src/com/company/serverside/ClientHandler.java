@@ -42,6 +42,7 @@ final class ClientHandler implements Runnable {
                 System.out.println(receivedMsg);
 
                 if (receivedMsg.equals("Exit")) {
+                    outputStream.writeUTF("Closing connection for this user");
                     this.closeConnection();
                     ownerServer.disconnectUser(this);
                     break;
@@ -70,6 +71,7 @@ final class ClientHandler implements Runnable {
             e.printStackTrace();
         }
     }
+
     private void closeConnection() throws IOException {
         System.out.println("Client " + this.socket + " sends exit...");
         System.out.println("Closing this connection.");
@@ -83,7 +85,7 @@ final class ClientHandler implements Runnable {
     }
 
     private void sendToAll(String msgToSend) throws IOException {
-        for (ClientHandler user : Server.userContainer) {
+        for (ClientHandler user : ownerServer.getUserContainer()) {
             user.outputStream.writeUTF(this.name + "( sent to all)" + " : " + msgToSend);
         }
 
@@ -92,7 +94,7 @@ final class ClientHandler implements Runnable {
     private void sendToOne(String msgToSend, String recipient) throws IOException {
         // search for the recipient in the connected devices list.
         // ar is the vector storing client of active users
-        for (ClientHandler user : Server.userContainer) {
+        for (ClientHandler user : ownerServer.getUserContainer()) {
             // if the recipient is found, write on its
             // output stream
             if (user.name.equals(recipient) && user.isLoggedIn) {

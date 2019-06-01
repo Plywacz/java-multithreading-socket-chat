@@ -6,7 +6,6 @@ Date: 06.03.2019
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Vector;
 
 //TODO: check if server counts users properly
@@ -22,7 +21,7 @@ final class Server {
 
     private final ServerSocket socketManager = new ServerSocket(SERVER_PORT);
     //Vector is thread safe
-    static Vector<ClientHandler> userContainer = new Vector<>();
+    private final Vector<ClientHandler> userContainer = new Vector<>();
 
     private Server() throws IOException {
 
@@ -41,8 +40,6 @@ final class Server {
 
     private void start() {
         while (usersCount < SERVER_SIZE) {
-            Socket newSocket;
-
             try {
                 //new  socket on server to handle new client's connection
                 //accept() blocks program when waiting for connection
@@ -73,5 +70,9 @@ final class Server {
     public static void main(String[] args) throws IOException {
         Server server = new Server();
         server.start();
+    }
+
+    public Vector<ClientHandler> getUserContainer() {
+        return userContainer;
     }
 }
