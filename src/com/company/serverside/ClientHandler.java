@@ -9,7 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-//TODO fix indexing clients(when removing client and then adding another client Program  creates bugged names of clients)
+
 final class ClientHandler implements Runnable {
     private final Server ownerServer;
 
@@ -32,6 +32,7 @@ final class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        //todo refactor code of this method, looks bad
         try {
             String receivedMsg;
             while (true) {
@@ -41,6 +42,15 @@ final class ClientHandler implements Runnable {
 
                 if (receivedMsg.equals("Exit")) {
                     outputStream.writeUTF("Exit"); //server tells client that it has closed connection for him
+                    ownerServer.getUserContainer().forEach(user-> {
+                        try {
+                            user.outputStream.writeUTF(name + " ...is quitting chat");
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
 
                     this.closeConnection();
                     ownerServer.disconnectUser(this);
@@ -52,12 +62,12 @@ final class ClientHandler implements Runnable {
                     continue;
                 }
                 else if (receivedMsg.equals("my name")) {
-                    outputStream.writeUTF("your name is: "+name);
+                    outputStream.writeUTF("your name is: " + name);
                     continue;
                 }
 
                 //divide receivedMsg into msg to send and recipient to sent to
-                if(!receivedMsg.contains("-> ")){
+                if (!receivedMsg.contains("-> ")) {
                     outputStream.writeUTF("wrong format of the msg");
                     continue;
                 }
@@ -100,14 +110,18 @@ final class ClientHandler implements Runnable {
     private void sendToOne(String msgToSend, String recipient) throws IOException {
         // search for the recipient in the connected devices list.
         // ar is the vector storing client of active users
+
         for (ClientHandler user : ownerServer.getUserContainer()) {
             // if the recipient is found, write on its
             // output stream
-            if (user.name.equals(recipient) && user.isLoggedIn) {
+            if (user.name.equals(recipient)) {
                 user.outputStream.writeUTF(this.name + " : " + msgToSend);
-                break;
+            }
+            else {
+                outputStream.writeUTF(recipient +": doesnt exist !");
             }
         }
+
     }
 
 

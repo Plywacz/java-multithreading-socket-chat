@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Vector;
 
-//TODO: check if server counts users properly
 
 final class Server {
     private static final int SERVER_PORT = 5056;
