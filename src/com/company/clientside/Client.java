@@ -13,7 +13,6 @@ import java.net.Socket;
 import java.util.Scanner;
 
 
-//TODO handle: logout without causing exceptions  on the client and server sides,
 
 public class Client {
     //flag to stop thread. Reminder thread stops when run() method from thread returned
@@ -59,6 +58,7 @@ public class Client {
                 }
             }
         });
+
         sendMessage.start();
     }
 
@@ -84,6 +84,7 @@ public class Client {
                 }
             }
         });
+
         readMessage.start();
     }
 

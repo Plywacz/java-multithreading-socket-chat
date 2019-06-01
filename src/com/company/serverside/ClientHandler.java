@@ -33,8 +33,6 @@ final class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            //TODO handle message sent to all users !
-
             String receivedMsg;
             while (true) {
 
@@ -43,7 +41,7 @@ final class ClientHandler implements Runnable {
 
                 if (receivedMsg.equals("Exit")) {
                     outputStream.writeUTF("Exit"); //server tells client that it has closed connection for him
-                    outputStream.writeUTF("Closing connection for this user");
+
                     this.closeConnection();
                     ownerServer.disconnectUser(this);
                     break;
@@ -53,8 +51,16 @@ final class ClientHandler implements Runnable {
                     outputStream.writeUTF(connectedUsers);
                     continue;
                 }
+                else if (receivedMsg.equals("my name")) {
+                    outputStream.writeUTF("your name is: "+name);
+                    continue;
+                }
 
                 //divide receivedMsg into msg to send and recipient to sent to
+                if(!receivedMsg.contains("-> ")){
+                    outputStream.writeUTF("wrong format of the msg");
+                    continue;
+                }
                 String[] result = receivedMsg.split("-> ");
                 String msgToSend = result[0];
                 String recipient = result[1];
@@ -66,7 +72,6 @@ final class ClientHandler implements Runnable {
                     sendToOne(msgToSend, recipient);
                 }
             }
-            this.closeConnection();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -82,7 +87,7 @@ final class ClientHandler implements Runnable {
         outputStream.close();
         this.socket.close();
 
-        System.out.println("Connection closed");
+        System.out.println("Connection closed for:" + name);
     }
 
     private void sendToAll(String msgToSend) throws IOException {

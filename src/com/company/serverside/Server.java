@@ -9,15 +9,13 @@ import java.net.ServerSocket;
 import java.util.Vector;
 
 //TODO: check if server counts users properly
-//todo: make server flexible for ip addresses
-//TODO: migrate this project to spring boot
 
 final class Server {
     private static final int SERVER_PORT = 5056;
-    private static final int SERVER_SIZE = 10;
+   // private static final int SERVER_SIZE = 3;
 
-    private int idCreator = 0;
-    private int usersCount = 0;
+    private static int idCreator = 0;
+   // private int usersCount = 0;
 
     private final ServerSocket socketManager = new ServerSocket(SERVER_PORT);
     //Vector is thread safe
@@ -39,10 +37,11 @@ final class Server {
     }
 
     private void start() {
-        while (usersCount < SERVER_SIZE) {
+        while (true) {
             try {
                 //new  socket on server to handle new client's connection
                 //accept() blocks program when waiting for connection
+
                 ClientHandler user = new ClientHandler(createNewUsername(), socketManager.accept(), this);
                 userContainer.add(user);
 
@@ -59,12 +58,11 @@ final class Server {
 
     void disconnectUser(ClientHandler user) {
         userContainer.remove(user);
-        usersCount--;
         idCreator--;
     }
 
     private String createNewUsername() {
-        return "user" + ++idCreator;
+        return "user" + idCreator++;
     }
 
     public static void main(String[] args) throws IOException {
