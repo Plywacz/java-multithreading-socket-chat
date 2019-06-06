@@ -74,7 +74,6 @@ public class Client {
                         inputStream.close();
                         outputStream.close();
                         socket.close();
-                        scn.close();
                         //you exit the run() you kill thread, return above does it
                     }
                     System.out.println(msg);

@@ -47,7 +47,7 @@ final class Server {
                 Thread t = new Thread(user);
                 t.start();
 
-                System.out.println("A new client is connected : ");
+                System.out.println("A new client is connected : "+ user.toString());
             }
             catch (Exception e) {
                 e.printStackTrace();

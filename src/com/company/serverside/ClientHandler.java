@@ -116,17 +116,16 @@ final class ClientHandler implements Runnable {
             // output stream
             if (user.name.equals(recipient)) {
                 user.outputStream.writeUTF(this.name + " : " + msgToSend);
-            }
-            else {
-                outputStream.writeUTF(recipient +": doesnt exist !");
+                return;
             }
         }
+        outputStream.writeUTF(recipient +": doesnt exist !");
 
     }
 
 
     @Override
     public String toString() {
-        return name;
+        return name+" :"+ socket.getInetAddress();
     }
 }
