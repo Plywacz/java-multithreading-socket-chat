@@ -1,19 +1,22 @@
 # java-multithreading-socket-chat
 
-java multithreading console chat using sockets. 
+## Info
+  - Simple console chat, written in Java, uses mainly WebSocket technology. Project include server side app, and client side app.
+   App utilizes threads to handle multiple users at once on server.
 
-How to run: start Server class then start one or more client classes in your IDE.
+## How to run:
+  - How to run: start Server class then start one or more client classes in your IDE.
 
-How to use: 
+## Functionality: 
 
-1)type "list users" to receive connected users list in user console.
+ - type "list users" to receive connected users list in user console.
 
-2)"Exit" to disconnect current user from server.
+ - "Exit" to disconnect current user from server.
 
-3)"my name", prints client's name.
+ - "my name", prints client's name.
 
-4)"some text -> user_name" type to send message to particulat user e.g "witam cie -> user1".
+ - "some text -> user_name" type to send message to particulat user e.g "witam cie -> user1".
 
-6)"some text -> all" to send message to all chat users".
+ - "some text -> all" to send message to all chat users".
 
-7) app prints communicate to all connected user when someone disconnects e.g  "user0 ...is quitting chat".
+ -  app prints communicate to all connected user when someone disconnects e.g  "user0 ...is quitting chat".
